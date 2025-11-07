@@ -394,6 +394,24 @@
             border-radius: 20px;
             font-size: 0.7rem;
             font-weight: 600;
+            z-index: 2;
+        }
+
+        .job-image {
+            height: 160px;
+            width: 100%;
+            background-size: cover;
+            background-position: center;
+            position: relative;
+        }
+
+        .job-image-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(to bottom, rgba(0,0,0,0.1), rgba(0,0,0,0.3));
         }
 
         .job-header {
@@ -660,7 +678,7 @@
             font-size: 0.85rem;
         }
 
-        /* Payment Modal */
+        /* Payment Modal - Landscape Fit */
         .modal {
             display: none;
             position: fixed;
@@ -668,7 +686,7 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background-color: rgba(0, 0, 0, 0.5);
+            background-color: rgba(0, 0, 0, 0.8);
             z-index: 1000;
             align-items: center;
             justify-content: center;
@@ -679,10 +697,13 @@
             background-color: white;
             border-radius: 10px;
             width: 100%;
-            max-width: 500px;
+            max-width: 95%;
+            max-height: 95vh;
             box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
             overflow: hidden;
             animation: modalAppear 0.3s ease-out;
+            display: flex;
+            flex-direction: column;
         }
 
         @keyframes modalAppear {
@@ -703,6 +724,7 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
+            flex-shrink: 0;
         }
 
         .modal-header h3 {
@@ -720,6 +742,10 @@
 
         .modal-body {
             padding: 1.2rem;
+            overflow-y: auto;
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
         }
 
         .payment-info {
@@ -817,6 +843,7 @@
             display: flex;
             justify-content: flex-end;
             gap: 10px;
+            flex-shrink: 0;
         }
 
         /* Load More Button */
@@ -934,6 +961,12 @@
             .footer-content {
                 grid-template-columns: repeat(4, 1fr);
             }
+
+            /* Landscape modal for desktop */
+            .modal-content {
+                max-width: 700px;
+                max-height: 500px;
+            }
         }
 
         @media (max-width: 767px) {
@@ -968,6 +1001,40 @@
             .search-filters {
                 grid-template-columns: 1fr;
             }
+
+            /* Landscape modal for mobile */
+            @media (orientation: landscape) {
+                .modal-content {
+                    max-width: 95%;
+                    max-height: 95vh;
+                    flex-direction: row;
+                }
+
+                .modal-body {
+                    flex-direction: row;
+                    flex-wrap: wrap;
+                }
+
+                .payment-info {
+                    width: 100%;
+                }
+
+                .payment-steps {
+                    flex: 1;
+                    margin-right: 1rem;
+                }
+
+                .payment-details {
+                    flex: 1;
+                }
+            }
+        }
+
+        /* Company Images */
+        .company-image {
+            width: 100%;
+            height: 160px;
+            object-fit: cover;
         }
     </style>
 </head>
@@ -1349,23 +1416,158 @@
     </div>
 
     <script>
-        // Job data with 200+ real businesses near CST University
-        // (Same job data as previous implementation - shortened for brevity)
+        // Job data with images
         const allJobs = [
-            // Sample jobs - in a real implementation, you would include all 200+ jobs
-            { id: 1, title: "Barista", company: "Bourbon Coffee", location: "UTC, KN4 Ave", salary: "65,000 - 85,000 FRW", salaryNum: 75000, category: "cafe", shifts: ["weekend", "evening"], description: "Prepare coffee beverages, handle cash transactions, and maintain cleanliness. Training provided.", featured: true, date: "2 days ago", views: 124 },
-            { id: 2, title: "Cashier", company: "Bourbon Coffee", location: "UTC, KN4 Ave", salary: "60,000 - 75,000 FRW", salaryNum: 67500, category: "cafe", shifts: ["weekend", "flexible"], description: "Handle customer orders, process payments, and assist with basic food preparation.", featured: false, date: "1 day ago", views: 98 },
-            { id: 3, title: "Server", company: "Le Rituel Café", location: "KN51 St", salary: "70,000 - 90,000 FRW", salaryNum: 80000, category: "cafe", shifts: ["evening", "weekend"], description: "Take orders, serve customers, and maintain dining area. Evening shifts available.", featured: true, date: "3 days ago", views: 156 },
-            // ... more jobs would be here in a real implementation
+            {
+                id: 1,
+                title: "Barista",
+                company: "Bourbon Coffee",
+                location: "UTC, KN4 Ave",
+                salary: "65,000 - 85,000 FRW",
+                salaryNum: 75000,
+                category: "cafe",
+                shifts: ["weekend", "evening"],
+                description: "Prepare coffee beverages, handle cash transactions, and maintain cleanliness. Training provided.",
+                featured: true,
+                date: "2 days ago",
+                views: 124,
+                image: "https://images.unsplash.com/photo-1501339847302-ac426a4a7cbb?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1170&q=80"
+            },
+            {
+                id: 2,
+                title: "Cashier",
+                company: "Bourbon Coffee",
+                location: "UTC, KN4 Ave",
+                salary: "60,000 - 75,000 FRW",
+                salaryNum: 67500,
+                category: "cafe",
+                shifts: ["weekend", "flexible"],
+                description: "Handle customer orders, process payments, and assist with basic food preparation.",
+                featured: false,
+                date: "1 day ago",
+                views: 98,
+                image: "https://images.unsplash.com/photo-1554118811-1e0d58224f24?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1147&q=80"
+            },
+            {
+                id: 3,
+                title: "Server",
+                company: "Le Rituel Café",
+                location: "KN51 St",
+                salary: "70,000 - 90,000 FRW",
+                salaryNum: 80000,
+                category: "cafe",
+                shifts: ["evening", "weekend"],
+                description: "Take orders, serve customers, and maintain dining area. Evening shifts available.",
+                featured: true,
+                date: "3 days ago",
+                views: 156,
+                image: "https://images.unsplash.com/photo-1559925393-8be0ec4767c8?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1171&q=80"
+            },
+            {
+                id: 4,
+                title: "Wait Staff",
+                company: "Repub Lounge",
+                location: "KG674 St",
+                salary: "75,000 - 95,000 FRW",
+                salaryNum: 85000,
+                category: "restaurant",
+                shifts: ["evening", "weekend"],
+                description: "Evening and weekend shifts available. Serve customers in upscale lounge.",
+                featured: true,
+                date: "5 hours ago",
+                views: 67,
+                image: "https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1170&q=80"
+            },
+            {
+                id: 5,
+                title: "Kitchen Assistant",
+                company: "Lemon Kigali",
+                location: "KG623 St",
+                salary: "70,000 - 85,000 FRW",
+                salaryNum: 77500,
+                category: "restaurant",
+                shifts: ["flexible", "evening"],
+                description: "Assist chefs with food preparation. Flexible scheduling for students.",
+                featured: false,
+                date: "1 week ago",
+                views: 89,
+                image: "https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1170&q=80"
+            },
+            {
+                id: 6,
+                title: "Bartender Assistant",
+                company: "Norvege Bar & Grill",
+                location: "Nyarugenge",
+                salary: "80,000 - 100,000 FRW",
+                salaryNum: 90000,
+                category: "bar",
+                shifts: ["evening"],
+                description: "Assist bartenders, stock supplies. Evening shifts only. Must be 18+.",
+                featured: true,
+                date: "4 days ago",
+                views: 143,
+                image: "https://images.unsplash.com/photo-1572116469696-31de0f17cc34?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1074&q=80"
+            },
+            {
+                id: 7,
+                title: "Stock Clerk",
+                company: "Simba Supermarket",
+                location: "Downtown, near UTC",
+                salary: "60,000 - 75,000 FRW",
+                salaryNum: 67500,
+                category: "retail",
+                shifts: ["flexible", "weekend"],
+                description: "Restock shelves, assist with inventory. Flexible student schedule.",
+                featured: false,
+                date: "3 days ago",
+                views: 134,
+                image: "https://images.unsplash.com/photo-1604719312566-8912e6597d26?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1170&q=80"
+            },
+            {
+                id: 8,
+                title: "Print Assistant",
+                company: "Fresh Print",
+                location: "KN87 St",
+                salary: "70,000 - 85,000 FRW",
+                salaryNum: 77500,
+                category: "printing",
+                shifts: ["flexible"],
+                description: "Operate printing equipment and assist customers with print orders.",
+                featured: false,
+                date: "2 days ago",
+                views: 87,
+                image: "https://images.unsplash.com/photo-1581093458791-9d67b3d5d6e8?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1170&q=80"
+            },
+            {
+                id: 9,
+                title: "Front Desk Assistant",
+                company: "Kigali Serena Hotel",
+                location: "Boulevard de la Revolution",
+                salary: "90,000 - 120,000 FRW",
+                salaryNum: 105000,
+                category: "hotel",
+                shifts: ["evening", "weekend"],
+                description: "Evening and weekend shifts at hotel front desk. Assist guests with check-in/out.",
+                featured: true,
+                date: "1 day ago",
+                views: 201,
+                image: "https://images.unsplash.com/photo-1566073771259-6a8506099945?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1170&q=80"
+            }
         ];
 
-        // Fill with more jobs to reach 200+ (simplified for this example)
-        for (let i = 4; i <= 50; i++) {
+        // Fill with more jobs to reach 50+ (simplified for this example)
+        for (let i = 10; i <= 50; i++) {
             const categories = ["cafe", "restaurant", "bar", "retail", "printing", "hotel"];
             const shifts = [["weekend"], ["evening"], ["flexible"], ["weekend", "evening"], ["weekend", "flexible"]];
             const companies = [
                 "Bourbon Coffee", "Le Rituel Café", "Brioche", "Inzora Rooftop Café", "Java House", 
-                "Shokola Café", "Question Coffee", "Kigali Tea House", "Repub Lounge", "Lemon Kigali"
+                "Shokola Café", "Question Coffee", "Kigali Tea House", "Repub Lounge", "Lemon Kigali",
+                "Biryani House", "Rubangura Food Court", "Camellia Restaurant", "Kiseki Japanese Restaurant",
+                "Master Grill", "Hotpoint Restaurant", "Pilipili Restaurant", "Norvege Bar & Grill",
+                "Chillax Lounge", "Sky Lounge", "Casa Keza", "KBC Bar Area", "Simba Supermarket",
+                "City Market", "La Galette Bakery", "Shoprite", "Sharma Supermarket", "Nakumatt Legacy Mall",
+                "Fresh Print", "Richtech Printing", "OPERA Ltd", "City Market Printing", "Kigali Print & Stationery",
+                "Kigali Serena Hotel", "Ubumwe Grande Hotel", "Hotel Okapi", "Park Inn by Radisson"
             ];
             
             const category = categories[Math.floor(Math.random() * categories.length)];
@@ -1373,6 +1575,16 @@
             const company = companies[Math.floor(Math.random() * companies.length)];
             const salaryNum = 50000 + Math.floor(Math.random() * 70000);
             const salary = `${(salaryNum - 10000).toLocaleString()} - ${(salaryNum + 10000).toLocaleString()} FRW`;
+            
+            // Different images for different categories
+            const categoryImages = {
+                cafe: "https://images.unsplash.com/photo-1501339847302-ac426a4a7cbb?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1170&q=80",
+                restaurant: "https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1170&q=80",
+                bar: "https://images.unsplash.com/photo-1572116469696-31de0f17cc34?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1074&q=80",
+                retail: "https://images.unsplash.com/photo-1604719312566-8912e6597d26?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1170&q=80",
+                printing: "https://images.unsplash.com/photo-1581093458791-9d67b3d5d6e8?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1170&q=80",
+                hotel: "https://images.unsplash.com/photo-1566073771259-6a8506099945?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1170&q=80"
+            };
             
             allJobs.push({
                 id: i,
@@ -1386,7 +1598,8 @@
                 description: getJobDescription(category, company),
                 featured: Math.random() > 0.8,
                 date: getRandomDate(),
-                views: 50 + Math.floor(Math.random() * 150)
+                views: 50 + Math.floor(Math.random() * 150),
+                image: categoryImages[category]
             });
         }
 
@@ -1556,6 +1769,9 @@
                 jobsContainer.innerHTML += jobsToShow.map(job => `
                     <div class="job-card ${job.featured ? 'featured' : ''}">
                         ${job.featured ? '<div class="job-badge">Featured</div>' : ''}
+                        <div class="job-image" style="background-image: url('${job.image}')">
+                            <div class="job-image-overlay"></div>
+                        </div>
                         <div class="job-header">
                             <h3 class="job-title">${job.title}</h3>
                             <div class="job-company">
@@ -1618,6 +1834,43 @@
                 payNowBtn.href = `tel:${ussdCode}`;
                 
                 paymentModal.style.display = 'flex';
+                
+                // Adjust modal for landscape orientation
+                adjustModalForLandscape();
+            }
+            
+            // Adjust modal layout for landscape
+            function adjustModalForLandscape() {
+                const modalContent = document.querySelector('.modal-content');
+                const modalBody = document.querySelector('.modal-body');
+                
+                if (window.innerHeight < window.innerWidth) {
+                    // Landscape orientation
+                    modalBody.style.flexDirection = 'row';
+                    modalBody.style.flexWrap = 'wrap';
+                    
+                    // Make payment steps and details side by side
+                    const paymentSteps = document.querySelector('.payment-steps');
+                    const paymentDetails = document.querySelectorAll('.payment-details')[1];
+                    
+                    if (paymentSteps && paymentDetails) {
+                        paymentSteps.style.flex = '1';
+                        paymentSteps.style.marginRight = '1rem';
+                        paymentDetails.style.flex = '1';
+                    }
+                } else {
+                    // Portrait orientation
+                    modalBody.style.flexDirection = 'column';
+                    
+                    const paymentSteps = document.querySelector('.payment-steps');
+                    const paymentDetails = document.querySelectorAll('.payment-details')[1];
+                    
+                    if (paymentSteps && paymentDetails) {
+                        paymentSteps.style.flex = 'none';
+                        paymentSteps.style.marginRight = '0';
+                        paymentDetails.style.flex = 'none';
+                    }
+                }
             }
             
             // Close payment modal
@@ -1634,6 +1887,10 @@
             function closeHamburgerMenu() {
                 hamburgerMenu.style.display = 'none';
             }
+            
+            // Listen for orientation changes
+            window.addEventListener('resize', adjustModalForLandscape);
+            window.addEventListener('orientationchange', adjustModalForLandscape);
             
             // Initialize the app
             init();
